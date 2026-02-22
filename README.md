@@ -1,73 +1,90 @@
-# React + TypeScript + Vite
+# ~ discovery
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Prioritizing Scy's ideas** — a personal RICE scoring tool for organizing product ideas across multiple projects.
 
-Currently, two official plugins are available:
+## What it does
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Discovery helps you capture ideas, score them with the [RICE framework](https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/) (Reach, Impact, Confidence, Effort), and decide what to build next.
 
-## React Compiler
+- **Multi-project support** — organize ideas into separate projects from a landing page
+- **Table view** — sortable spreadsheet with all RICE dimensions, status, and inline actions
+- **Kanban view** — drag cards between status columns (Open → To-do → In Progress → Paused → Testing → Done)
+- **Drag-and-drop reordering** — manual ordering in both table and kanban views
+- **RICE auto-scoring** — scores update live as you adjust reach, impact, confidence, and effort
+- **Local-only storage** — everything lives in `localStorage`, no backend
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## RICE formula
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+score = (reach × impact × confidence%) / effort
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+| Parameter  | Range         | Notes                       |
+|------------|---------------|-----------------------------|
+| Reach      | 1–10          | How many people this affects |
+| Impact     | 0.25x – 3x    | Minimal → Massive           |
+| Confidence | 0–100%        | How sure you are             |
+| Effort     | 1+ hours      | Time to implement            |
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Getting started
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
+
+Opens at `http://localhost:5173`.
+
+## Scripts
+
+| Command           | What it does                  |
+|-------------------|-------------------------------|
+| `npm run dev`     | Start dev server with HMR     |
+| `npm run build`   | Type-check + production build  |
+| `npm run preview` | Preview the production build   |
+| `npm run lint`    | Run ESLint                     |
+
+## Tech stack
+
+- React 19 + TypeScript
+- Vite 7
+- [dnd-kit](https://dndkit.com/) for drag-and-drop
+- CSS Modules with a custom galaxy/glassmorphism theme
+- No router — state-driven navigation via React context
+
+## Project structure
+
+```
+src/
+├── components/        # UI components
+│   ├── ProjectsPage   # Landing page with project grid
+│   ├── ProjectCard     # Project card with stats
+│   ├── ProjectForm     # Create/edit project modal
+│   ├── Header          # Dual-mode header (landing vs project)
+│   ├── TableView       # Sortable RICE table
+│   ├── KanbanBoard     # Status-column kanban
+│   ├── KanbanColumn    # Single kanban column
+│   ├── KanbanCard      # Draggable idea card
+│   ├── TableRow        # Draggable table row
+│   ├── IdeaForm        # Create/edit idea modal
+│   ├── RiceScore       # Score badge component
+│   └── ConfirmDialog   # Delete confirmation
+├── context/
+│   └── IdeasContext    # All app state, reducer, persistence
+├── styles/            # CSS Modules (galaxy theme)
+├── utils/
+│   └── rice           # RICE calculation + score colors
+└── types.ts           # TypeScript interfaces + constants
+```
+
+## Data persistence
+
+All data is stored in `localStorage` under three keys:
+
+| Key                    | Contents                           |
+|------------------------|------------------------------------|
+| `discovery-ideas`      | Array of ideas with RICE scores    |
+| `discovery-projects`   | Array of projects                  |
+| `discovery-prefs`      | View mode, sort mode, last project |
+
+If you have ideas from before multi-project support was added, they auto-migrate into a "My Ideas" project on first load.
