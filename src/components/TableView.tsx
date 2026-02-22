@@ -125,8 +125,8 @@ export default function TableView() {
               <tr>
                 {isManual && <th style={{ width: 40 }}></th>}
                 {renderSortHeader("Title", "title")}
-                {renderSortHeader("Reach", "reach")}
-                {renderSortHeader("Impact", "impact")}
+                {renderSortHeader("Really, who needs this?", "reach")}
+                {renderSortHeader("Impact on WOW factor", "impact")}
                 {renderSortHeader("Confidence", "confidence")}
                 {renderSortHeader("Effort", "effort")}
                 {renderSortHeader("RICE", "riceScore")}

@@ -3,6 +3,8 @@ import {
   useContext,
   useReducer,
   useEffect,
+  useRef,
+  useCallback,
   type ReactNode,
   type Dispatch,
 } from "react";
@@ -63,7 +65,8 @@ type Action =
   | { type: "SET_ACTIVE_PROJECT"; payload: string | null }
   | { type: "SET_EDITING_PROJECT"; payload: Project | null }
   | { type: "SET_SHOW_PROJECT_FORM"; payload: boolean }
-  | { type: "SET_DELETE_PROJECT_CONFIRM"; payload: string | null };
+  | { type: "SET_DELETE_PROJECT_CONFIRM"; payload: string | null }
+  | { type: "LOAD_FROM_BACKUP"; payload: { ideas: Idea[]; projects: Project[]; prefs: { viewMode: ViewMode; sortMode: SortMode; activeProjectId: string | null } } };
 
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
@@ -196,6 +199,16 @@ function reducer(state: AppState, action: Action): AppState {
     case "SET_DELETE_PROJECT_CONFIRM":
       return { ...state, deleteProjectConfirm: action.payload };
 
+    case "LOAD_FROM_BACKUP":
+      return {
+        ...state,
+        ideas: action.payload.ideas,
+        projects: action.payload.projects,
+        viewMode: action.payload.prefs.viewMode,
+        sortMode: action.payload.prefs.sortMode,
+        activeProjectId: action.payload.prefs.activeProjectId,
+      };
+
     default:
       return state;
   }
@@ -268,6 +281,77 @@ export function IdeasProvider({ children }: { children: ReactNode }) {
       })
     );
   }, [state.viewMode, state.sortMode, state.activeProjectId]);
+
+  // --- File backup (dev server only) ---
+
+  const backupTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef = useRef(false);
+
+  const saveBackup = useCallback(() => {
+    if (backupTimer.current) clearTimeout(backupTimer.current);
+    backupTimer.current = setTimeout(() => {
+      try {
+        fetch("/api/backup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ideas: state.ideas,
+            projects: state.projects,
+            prefs: {
+              viewMode: state.viewMode,
+              sortMode: state.sortMode,
+              activeProjectId: state.activeProjectId,
+            },
+          }),
+        }).catch(() => {});
+      } catch {
+        // dev server not running — ignore
+      }
+    }, 1000);
+  }, [state.ideas, state.projects, state.viewMode, state.sortMode, state.activeProjectId]);
+
+  // Auto-save to backup file on state changes (skip initial mount)
+  useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return;
+    }
+    saveBackup();
+  }, [saveBackup]);
+
+  // Restore from backup file if localStorage is empty
+  useEffect(() => {
+    const hasLocal =
+      localStorage.getItem(STORAGE_KEY) || localStorage.getItem(PROJECTS_KEY);
+    if (hasLocal) return;
+
+    fetch("/api/backup")
+      .then((res) => {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then((data) => {
+        if (
+          data &&
+          (Array.isArray(data.ideas) && data.ideas.length > 0 ||
+           Array.isArray(data.projects) && data.projects.length > 0)
+        ) {
+          dispatch({
+            type: "LOAD_FROM_BACKUP",
+            payload: {
+              ideas: data.ideas ?? [],
+              projects: data.projects ?? [],
+              prefs: {
+                viewMode: data.prefs?.viewMode ?? "table",
+                sortMode: data.prefs?.sortMode ?? "auto",
+                activeProjectId: data.prefs?.activeProjectId ?? null,
+              },
+            },
+          });
+        }
+      })
+      .catch(() => {});
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <IdeasContext.Provider value={{ state, dispatch }}>

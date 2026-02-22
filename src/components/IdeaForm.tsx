@@ -129,7 +129,7 @@ export default function IdeaForm() {
 
           <div className={styles.riceGrid}>
             <div className={styles.field}>
-              <label className={styles.label}>Reach (1-10)</label>
+              <label className={styles.label}>Really, who needs this? (1-10)</label>
               <div className={styles.sliderRow}>
                 <input
                   type="range"
@@ -145,7 +145,7 @@ export default function IdeaForm() {
             </div>
 
             <div className={styles.field}>
-              <label className={styles.label}>Impact</label>
+              <label className={styles.label}>Impact on WOW factor</label>
               <select
                 className={styles.select}
                 value={impact}

@@ -10,13 +10,13 @@ export function calculateRice(
 }
 
 export function getScoreColor(score: number): string {
-  if (score >= 10) return "var(--color-score-high)";
-  if (score >= 4) return "var(--color-score-medium)";
+  if (score >= 2) return "var(--color-score-high)";
+  if (score >= 1) return "var(--color-score-medium)";
   return "var(--color-score-low)";
 }
 
 export function getScoreLevel(score: number): "high" | "medium" | "low" {
-  if (score >= 10) return "high";
-  if (score >= 4) return "medium";
+  if (score >= 2) return "high";
+  if (score >= 1) return "medium";
   return "low";
 }
