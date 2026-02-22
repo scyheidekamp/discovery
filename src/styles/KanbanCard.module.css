@@ -1,0 +1,87 @@
+.card {
+  background: rgba(10, 8, 25, 0.6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+  position: relative;
+}
+
+.card:hover {
+  border-color: rgba(168, 85, 247, 0.35);
+  background: rgba(25, 18, 50, 0.8);
+  box-shadow: 0 2px 12px rgba(100, 40, 200, 0.15);
+}
+
+.dragging {
+  opacity: 0.4;
+}
+
+.dragOverlay {
+  background: rgba(25, 18, 55, 0.95);
+  border: 1px solid var(--color-primary);
+  box-shadow: var(--glow-purple);
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.cardTitle {
+  font-weight: 500;
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.cardDesc {
+  font-size: 0.78rem;
+  color: var(--color-text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-style: italic;
+}
+
+.cardActions {
+  display: flex;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+  justify-content: flex-end;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.card:hover .cardActions {
+  opacity: 1;
+}
+
+.cardActionBtn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-dim);
+  font-size: 0.8rem;
+  transition: all var(--transition-fast);
+}
+
+.cardActionBtn:hover {
+  background: var(--color-surface-active);
+  color: var(--color-nebula-violet);
+}
+
+.deleteBtn:hover {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+}

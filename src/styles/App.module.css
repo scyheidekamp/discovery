@@ -1,0 +1,16 @@
+.app {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--space-lg);
+  min-height: 100vh;
+}
+
+.content {
+  margin-top: var(--space-lg);
+}
+
+@media (max-width: 768px) {
+  .app {
+    padding: var(--space-md);
+  }
+}

@@ -1,0 +1,79 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+.addCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: var(--space-sm);
+  min-height: 160px;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--color-text-dim);
+  backdrop-filter: blur(12px);
+}
+
+.addCard:hover {
+  border-color: rgba(168, 85, 247, 0.4);
+  background: rgba(168, 85, 247, 0.05);
+  color: var(--color-nebula-violet);
+}
+
+.addIcon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.addLabel {
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: 80px var(--space-lg);
+  text-align: center;
+}
+
+.emptyTitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
+}
+
+.emptyText {
+  color: var(--color-text-dim);
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+.emptyBtn {
+  margin-top: var(--space-sm);
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: white;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all var(--transition-fast);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
+}
+
+.emptyBtn:hover {
+  background: linear-gradient(135deg, #c084fc, #a855f7);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+  transform: translateY(-1px);
+}
